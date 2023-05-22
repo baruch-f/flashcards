@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flashcards</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="tabs-container" id="tabs-container"></div>
+      <div id="flashcard-container" class="flashcard-container"></div>
+      <div class="button-container">
+        <button id="prev-button" class="button">Previous</button>
+        <button id="next-button" class="button">Next</button>
+      </div>
+      <div class="random-order-container">
+        <label for="random-order-checkbox">Random Order:</label>
+        <input type="checkbox" id="random-order-checkbox" />
+      </div>
+    </div>
+    <script src="db.js"></script>
+    <script src="flashcards.js"></script>
+  </body>
+</html>
