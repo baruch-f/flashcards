@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
   randomOrderCheckbox.addEventListener("change", toggleRandomOrder);
   tabsContainer.addEventListener("click", handleTabClick);
 
+  const db = [...dbJunior, ...dbMiddle];
   flashcards = db;
   console.log("db", db);
   flashcards = db.map((card) => {
