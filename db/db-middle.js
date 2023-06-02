@@ -201,7 +201,7 @@ const dbMiddle = [
       <span class="hljs-keyword">const</span> handler = {
         <span class="hljs-attr">get</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">target, prop</span>) {
           <span class="hljs-keyword">if</span> (prop === <span class="hljs-string">'age'</span>) {
-            <span class="hljs-keyword">return</span> <span class="hljs-string">'Age: <span class="hljs-subst">${target[prop]}</span>'</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-string">'Age: <span class="hljs-subst">$ {target[prop]}</span>'</span>;
           } <span class="hljs-keyword">else</span> {
             <span class="hljs-keyword">return</span> target[prop];
           }
