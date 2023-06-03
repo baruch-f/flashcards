@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   let flashcards = [];
+  let activeCards = {};
   let currentCardIndex = 0;
   let isRandomOrder = false;
   let currentGroup = "all";
@@ -16,17 +17,42 @@ document.addEventListener("DOMContentLoaded", function () {
   tabsContainer.addEventListener("click", handleTabClick);
 
   const db = [...dbJunior, ...dbMiddle, ...dbSenior];
-  flashcards = db;
-  console.log("db", db);
-  flashcards = db.map((card) => {
+  // flashcards = db;
+  flashcards = db.map((card, index) => {
     return {
+      id: `card-${index}`,
       front: replaceCodeFragments(card.front),
       back: replaceCodeFragments(card.back),
     };
   });
+  flashcards.sort((a, b) => a.front > b.front);
+
+  getStateFromLocalStorage();
 
   createTabs(db);
   showCard(currentCardIndex);
+
+  function saveStateToLocalStorage() {
+    localStorage.setItem("currentTab", currentGroup);
+    localStorage.setItem("currentCardIndex", currentCardIndex);
+    localStorage.setItem("activeCards", JSON.stringify(activeCards));
+  }
+
+  function getStateFromLocalStorage() {
+    const savedTab = localStorage.getItem("currentTab");
+    const savedCardIndex = localStorage.getItem("currentCardIndex");
+
+    if (savedTab && savedCardIndex) {
+      currentGroup = savedTab;
+      currentCardIndex = parseInt(savedCardIndex);
+      filterCardsByGroup();
+    }
+
+    const savedActiveCards = localStorage.getItem("activeCards");
+    if (savedActiveCards) {
+      activeCards = JSON.parse(savedActiveCards);
+    }
+  }
 
   function createTabs(data) {
     const groups = ["all"];
@@ -41,8 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
     groups.forEach((group) => {
       const button = document.createElement("button");
       button.classList.add("tab-button");
-      button.textContent = group.charAt(0).toUpperCase() + group.slice(1); // Capitalize first letter
+      button.textContent = group.charAt(0).toUpperCase() + group.slice(1);
       button.dataset.group = group;
+      if (group === currentGroup) {
+        button.classList.add("active");
+        currentCardIndex = activeCards[group] || 0;
+      }
       tabsContainer.appendChild(button);
     });
   }
@@ -54,6 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const flashcard = createFlashcard(cardData);
 
     flashcardContainer.appendChild(flashcard);
+    activeCards[currentGroup] = index;
+    saveStateToLocalStorage();
   }
 
   function createFlashcard(cardData) {
@@ -90,11 +122,13 @@ document.addEventListener("DOMContentLoaded", function () {
     currentCardIndex =
       (currentCardIndex - 1 + flashcards.length) % flashcards.length;
     showCard(currentCardIndex);
+    saveStateToLocalStorage();
   }
 
   function showNextCard() {
     currentCardIndex = (currentCardIndex + 1) % flashcards.length;
     showCard(currentCardIndex);
+    saveStateToLocalStorage();
   }
 
   function toggleRandomOrder() {
@@ -107,6 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     showCard(currentCardIndex);
+    saveStateToLocalStorage();
   }
 
   function shuffleCards() {
@@ -121,8 +156,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (clickedGroup && clickedGroup !== currentGroup) {
       currentGroup = clickedGroup;
       filterCardsByGroup();
-      showCard(0);
+      currentCardIndex = activeCards[currentGroup] || 0;
+      showCard(currentCardIndex);
       updateTabButtons();
+      saveStateToLocalStorage();
     }
   }
 
@@ -130,6 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (currentGroup === "all") {
       flashcards = db;
     } else {
+      flashcards.sort((a, b) => a.front > b.front);
       flashcards = db.filter((card) => card.group === currentGroup);
     }
   }
