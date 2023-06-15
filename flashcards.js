@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const nextButton = document.getElementById("next-button");
   const randomOrderCheckbox = document.getElementById("random-order-checkbox");
   const tabsContainer = document.getElementById("tabs-container");
+  const currentIndexBanner = document.getElementById("current-index-banner");
 
   prevButton.addEventListener("click", showPreviousCard);
   nextButton.addEventListener("click", showNextCard);
@@ -85,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     flashcardContainer.appendChild(flashcard);
     activeCards[currentGroup] = index;
+    currentIndexBanner.innerText = index;
     saveStateToLocalStorage();
   }
 
@@ -117,6 +119,16 @@ document.addEventListener("DOMContentLoaded", function () {
       backContent.style.display = "block";
     }
   }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowLeft") {
+      showPreviousCard();
+    } else if (event.key === "ArrowRight") {
+      showNextCard();
+    } else if (event.key === "Enter") {
+      flashcardContainer.firstChild.dispatchEvent(new Event("click"));
+    }
+  });
 
   function showPreviousCard() {
     currentCardIndex =

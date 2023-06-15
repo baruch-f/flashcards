@@ -2637,6 +2637,11 @@ pre[class*="language-"] {
 .token.entity {
   cursor: help;
 }
+.prose :where(code):not(:where([class~="not-prose"] *)) {
+  color: var(--tw-prose-code);
+  font-size: 0.875em;
+  font-weight: 600;
+}
 @media screen and (-ms-high-contrast: active) {
   code[class*="language-"],
   pre[class*="language-"] {
